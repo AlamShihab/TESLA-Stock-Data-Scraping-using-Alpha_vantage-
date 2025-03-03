@@ -1,0 +1,66 @@
+# Install the alpha_vantage package (uncomment if not already installed)
+!pip install alpha_vantage
+
+import time
+import pandas as pd
+from alpha_vantage.timeseries import TimeSeries
+from alpha_vantage.techindicators import TechIndicators
+
+#API
+api_key = 'API_KEY' #I am not going to disclose my api key here. 
+
+# Created an instance of TimeSeries and TechIndicators with pandas output.
+ts = TimeSeries(key=api_key, output_format='pandas')
+ti = TechIndicators(key=api_key, output_format='pandas')
+
+# Choosed the ticker symbol for Tesla 
+ticker = 'TSLA'
+
+# 1. Global Quote: Get the latest price & volume info.
+quote_data, quote_meta = ts.get_quote_endpoint(ticker)
+print("=== Global Quote ===")
+print(quote_data)
+time.sleep(12)  # delay to respect rate limits
+
+# 2. Intraday Data: Get 1-minute interval data
+intraday_data, intraday_meta = ts.get_intraday(symbol=ticker, interval='1min', outputsize='compact')
+print("\n=== Intraday Data (1min) ===")
+print(intraday_data.head())
+time.sleep(12)
+
+# 2. Intraday Data: Get 1-minute interval data
+intraday_data, intraday_meta = ts.get_intraday(symbol=ticker, interval='1min', outputsize='compact')
+print("\n=== Intraday Data (1min) ===")
+print(intraday_data.head())
+time.sleep(12)
+
+# 3. Daily Time Series: Get full daily data 
+daily_data, daily_meta = ts.get_daily(symbol=ticker, outputsize='full')
+print("\n=== Daily Data ===")
+print(daily_data.head())
+time.sleep(12)
+
+# 4. Weekly Time Series: Get weekly data.
+weekly_data, weekly_meta = ts.get_weekly(symbol=ticker)
+print("\n=== Weekly Data ===")
+print(weekly_data.head())
+time.sleep(12)
+
+# 5. Monthly Time Series: Get monthly data.
+monthly_data, monthly_meta = ts.get_monthly(symbol=ticker)
+print("\n=== Monthly Data ===")
+print(monthly_data.head())
+time.sleep(12)
+
+# 6. Technical Indicator: Calculate the 20-day Simple Moving Average (SMA) of the closing price.
+sma_data, sma_meta = ti.get_sma(symbol=ticker, interval='daily', time_period=20, series_type='close')
+print("\n=== 20-Day SMA ===")
+print(sma_data.head())
+
+# Save data to CSV files
+daily_data.to_csv('TSLA_daily_data.csv')
+weekly_data.to_csv('TSLA_weekly_data.csv')
+monthly_data.to_csv('TSLA_monthly_data.csv')
+sma_data.to_csv('TSLA_SMA_data.csv')
+
+print("\nData has been collected and saved to CSV files.")
